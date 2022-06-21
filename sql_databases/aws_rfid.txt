@@ -1,0 +1,70 @@
+Each command is directly copied out of the MYSQL Workbench using the command "show create table"
+
+CREATE TABLE `rfid_tags` (
+   `tag_uid` varchar(20) NOT NULL,
+   `washable` tinyint(1) DEFAULT NULL,
+   `hamper_ID` int DEFAULT NULL,
+   `already_edited` tinyint(1) DEFAULT NULL,
+   `date` date DEFAULT NULL,
+   `time` time DEFAULT NULL,
+   PRIMARY KEY (`tag_uid`),
+   KEY `hamper_ID` (`hamper_ID`),
+   CONSTRAINT `rfid_tags_ibfk_1` FOREIGN KEY (`hamper_ID`) REFERENCES `laundry_hamper` (`hamper_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+CREATE TABLE `clothes` (
+   `clothing_ID` int NOT NULL,
+   `tag_uid` varchar(20) DEFAULT NULL,
+   `owner_ID` int DEFAULT NULL,
+   `max_temperature` int DEFAULT NULL,
+   `max_spin_speed` int DEFAULT NULL,
+   `ideal_program` int DEFAULT NULL,
+   `size` varchar(5) DEFAULT NULL,
+   `brand` varchar(50) DEFAULT NULL,
+   `color` varchar(20) DEFAULT NULL,
+   `clothing_type` varchar(50) DEFAULT NULL,
+   PRIMARY KEY (`clothing_ID`),
+   KEY `tag_uid` (`tag_uid`),
+   KEY `owner_ID` (`owner_ID`),
+   KEY `ideal_program` (`ideal_program`),
+   CONSTRAINT `clothes_ibfk_1` FOREIGN KEY (`tag_uid`) REFERENCES `rfid_tags` (`tag_uid`),
+   CONSTRAINT `clothes_ibfk_2` FOREIGN KEY (`owner_ID`) REFERENCES `owner` (`owner_ID`),
+   CONSTRAINT `clothes_ibfk_3` FOREIGN KEY (`ideal_program`) REFERENCES `program` (`program_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `laundry_hamper` (
+   `hamper_ID` int NOT NULL,
+   `hamper_name` varchar(20) DEFAULT NULL,
+   `position` varchar(100) DEFAULT NULL,
+   PRIMARY KEY (`hamper_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `owner` (
+   `owner_ID` int NOT NULL,
+   `given_name` varchar(20) DEFAULT NULL,
+   `surname` varchar(20) DEFAULT NULL,
+   `shoe_size` int DEFAULT NULL,
+   `height` int DEFAULT NULL,
+   PRIMARY KEY (`owner_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `program` (
+   `program_ID` int NOT NULL,
+   `program_name` varchar(20) DEFAULT NULL,
+   `temperature` int DEFAULT NULL,
+   `spin_speed` int DEFAULT NULL,
+   PRIMARY KEY (`program_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `reading_log` (
+   `log_ID` int NOT NULL AUTO_INCREMENT,
+   `tag_uid` varchar(20) DEFAULT NULL,
+   `direction` varchar(10) DEFAULT NULL,
+   `hamper_ID` int NOT NULL,
+   `timestamp` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`log_ID`),
+   KEY `tag_uid` (`tag_uid`),
+   KEY `hamper_ID` (`hamper_ID`),
+   CONSTRAINT `reading_log_ibfk_1` FOREIGN KEY (`tag_uid`) REFERENCES `rfid_tags` (`tag_uid`),
+   CONSTRAINT `reading_log_ibfk_2` FOREIGN KEY (`hamper_ID`) REFERENCES `laundry_hamper` (`hamper_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
