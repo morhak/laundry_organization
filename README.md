@@ -1,1 +1,2 @@
-"# laundry_organization" 
+In the first step, this serves only as a repository for the written, mostly uncommented code.
+A detailed and complete documentation of the code and the whole project may follow at a later date...
