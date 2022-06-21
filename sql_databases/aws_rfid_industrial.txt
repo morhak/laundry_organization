@@ -1,0 +1,71 @@
+Each command is directly copied out of the MYSQL Workbench using the command "show create table"
+
+CREATE TABLE `rfid_tags` (
+   `tag_uid` varchar(20) NOT NULL,
+   `location` int DEFAULT NULL,
+   `owner_ID` int DEFAULT NULL,
+   `timestamp` timestamp NULL DEFAULT NULL,
+   `status_ID` int NOT NULL,
+   PRIMARY KEY (`tag_uid`),
+   KEY `owner_ID` (`owner_ID`),
+   KEY `location` (`location`),
+   KEY `status_ID` (`status_ID`),
+   CONSTRAINT `rfid_tags_ibfk_1` FOREIGN KEY (`owner_ID`) REFERENCES `owner` (`owner_ID`),
+   CONSTRAINT `rfid_tags_ibfk_2` FOREIGN KEY (`location`) REFERENCES `company` (`company_ID`),
+   CONSTRAINT `rfid_tags_ibfk_3` FOREIGN KEY (`status_ID`) REFERENCES `status` (`status_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `company` (
+   `company_ID` int NOT NULL AUTO_INCREMENT,
+   `address` varchar(100) DEFAULT NULL,
+   `company_name` varchar(50) DEFAULT NULL,
+   PRIMARY KEY (`company_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `analysis_log` (
+   `log_ID` int NOT NULL AUTO_INCREMENT,
+   `company_ID` int NOT NULL,
+   `timestamp` timestamp NOT NULL,
+   `quantity` int DEFAULT NULL,
+   PRIMARY KEY (`log_ID`),
+   KEY `company_ID` (`company_ID`),
+   CONSTRAINT `analysis_log_ibfk_1` FOREIGN KEY (`company_ID`) REFERENCES `company` (`company_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=179 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `owner` (
+   `owner_ID` int NOT NULL AUTO_INCREMENT,
+   `company_ID` int DEFAULT NULL,
+   `staff_number` int DEFAULT NULL,
+   `surname` varchar(20) DEFAULT NULL,
+   `given_name` varchar(20) DEFAULT NULL,
+   PRIMARY KEY (`owner_ID`),
+   KEY `company_ID` (`company_ID`),
+   CONSTRAINT `owner_ibfk_1` FOREIGN KEY (`company_ID`) REFERENCES `company` (`company_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `prediction` (
+   `entry_ID` int NOT NULL AUTO_INCREMENT,
+   `company_ID` int NOT NULL,
+   `prediction` datetime DEFAULT NULL,
+   PRIMARY KEY (`entry_ID`),
+   KEY `company_ID` (`company_ID`),
+   CONSTRAINT `prediction_ibfk_1` FOREIGN KEY (`company_ID`) REFERENCES `company` (`company_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `reading_log` (
+   `log_ID` int NOT NULL AUTO_INCREMENT,
+   `tag_uid` varchar(20) NOT NULL,
+   `timestamp` timestamp NULL DEFAULT NULL,
+   `new_status_ID` int DEFAULT NULL,
+   PRIMARY KEY (`log_ID`),
+   KEY `tag_uid` (`tag_uid`),
+   KEY `new_status_ID` (`new_status_ID`),
+   CONSTRAINT `reading_log_ibfk_1` FOREIGN KEY (`tag_uid`) REFERENCES `rfid_tags` (`tag_uid`),
+   CONSTRAINT `reading_log_ibfk_2` FOREIGN KEY (`new_status_ID`) REFERENCES `status` (`status_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=363 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ CREATE TABLE `status` (
+   `status_ID` int NOT NULL AUTO_INCREMENT,
+   `description` varchar(50) DEFAULT NULL,
+   PRIMARY KEY (`status_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
